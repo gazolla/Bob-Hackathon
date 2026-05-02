@@ -1,0 +1,116 @@
+{
+  "mcpServers": {
+    "java-to-db2-migration-assistant": {
+      "url": "http://localhost:8080/mcp",
+      "transport": "sse",
+      "name": "Java to DB2 Migration Assistant",
+      "description": "AI-powered assistant for migrating Java applications from PostgreSQL to IBM DB2. Provides schema conversion, query translation, configuration generation, and test suite creation.",
+      "version": "1.0.0",
+      "tools": [
+        {
+          "name": "convertPostgresSchemaToDb2",
+          "description": "Convert PostgreSQL database schema (CREATE TABLE statements) to DB2-compatible DDL with Flyway migration script. Handles data type conversions (SERIAL→IDENTITY, TEXT→CLOB, BOOLEAN→SMALLINT), timestamp functions, and index syntax.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "schemaSQL": {
+                "type": "string",
+                "description": "PostgreSQL CREATE TABLE statements or full schema DDL"
+              }
+            },
+            "required": ["schemaSQL"]
+          }
+        },
+        {
+          "name": "convertPostgresQueryToDb2",
+          "description": "Convert PostgreSQL SQL queries or JPA/Spring Data code to DB2-compatible syntax. Handles string operations (||→CONCAT), case-insensitive search (ILIKE→LIKE), boolean logic (TRUE/FALSE→1/0), pagination (LIMIT/OFFSET→FETCH FIRST), and date/time functions.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "jpaOrSql": {
+                "type": "string",
+                "description": "PostgreSQL SQL query, JPA query, or Spring Data repository method"
+              }
+            },
+            "required": ["jpaOrSql"]
+          }
+        },
+        {
+          "name": "generateDb2ConnectionConfig",
+          "description": "Generate complete DB2 connection configuration for Quarkus/Spring Boot from IBM Cloud credentials. Creates application.properties with JDBC URL, Hibernate dialect, Flyway setup, and connection pool settings. Also provides Maven dependencies.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "ibmCloudCredentials": {
+                "type": "object",
+                "description": "IBM Cloud DB2 connection credentials",
+                "properties": {
+                  "hostname": {
+                    "type": "string",
+                    "description": "DB2 server hostname"
+                  },
+                  "port": {
+                    "type": "string",
+                    "description": "DB2 port (default 50000)"
+                  },
+                  "database": {
+                    "type": "string",
+                    "description": "Database name"
+                  },
+                  "username": {
+                    "type": "string",
+                    "description": "DB2 username"
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "DB2 password"
+                  },
+                  "ssl": {
+                    "type": "string",
+                    "description": "Enable SSL (true/false)"
+                  },
+                  "certificate_base64": {
+                    "type": "string",
+                    "description": "Optional SSL certificate in base64"
+                  }
+                },
+                "required": ["hostname", "database", "username", "password"]
+              }
+            },
+            "required": ["ibmCloudCredentials"]
+          }
+        },
+        {
+          "name": "generateMigrationTestSuite",
+          "description": "Generate comprehensive JUnit 5 test suite for validating PostgreSQL to DB2 migration. Creates tests for entity persistence (IDENTITY, CLOB, boolean 0/1), repository queries (FETCH FIRST pagination, LIKE search), service transactions, and DB2-specific features.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "originalCode": {
+                "type": "string",
+                "description": "Original Java code (Entity, Repository, or Service) to generate tests for"
+              }
+            },
+            "required": ["originalCode"]
+          }
+        }
+      ],
+      "capabilities": {
+        "schemaConversion": true,
+        "queryConversion": true,
+        "configGeneration": true,
+        "testGeneration": true
+      },
+      "metadata": {
+        "author": "IBM Migration Team",
+        "repository": "https://github.com/ibm/java-to-db2-migration-assistant",
+        "documentation": "https://github.com/ibm/java-to-db2-migration-assistant/blob/main/README.md",
+        "supportedDatabases": ["PostgreSQL", "DB2"],
+        "supportedFrameworks": ["Quarkus", "Spring Boot"],
+        "javaVersion": "21+"
+      }
+    }
+  }
+}
+
+// Made with Bob
